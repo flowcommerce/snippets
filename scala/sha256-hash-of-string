@@ -1,0 +1,20 @@
+package io.flow.catalog.api.lib
+
+import java.security.MessageDigest
+import java.nio.charset.StandardCharsets
+import org.apache.commons.codec.binary.Base64
+
+object Hash {
+
+  private[this] val Sha256 = "SHA-256"
+
+  /**
+    * Computes the sha256 of the specified string, returning the
+    * base64 encoding.
+    */
+  def sha256(value: String): String  = {
+    val digest = MessageDigest.getInstance(Sha256)
+    val bytes = digest.digest(value.getBytes(StandardCharsets.UTF_8))
+    Base64.encodeBase64String(bytes)
+  }
+}
