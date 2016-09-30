@@ -1,9 +1,28 @@
+#!/usr/bin/env ruby
+
+#Examples:
+#
+# Test using flow client:
+#  ./card-nonce-exchange.rb <org>
+#
+# Test using curl directly:
+#  ./card-nonce-exchange.rb <org> curl
+#
+
 require 'benchmark'
 require 'flowcommerce'
 
 org = ARGV.shift.to_s.strip
 if org.empty?
   puts "ERROR: org is required"
+  exit(1)
+end
+
+type = ARGV.shift.to_s.strip
+if type.empty?
+  type = 'client'
+elsif type != 'curl'
+  puts "ERROR: Unknown type '$typ'. Must be 'client' or 'curl'"
   exit(1)
 end
 
@@ -35,14 +54,17 @@ end
 
 bm = Benchmark.measure { 
   puts "     Exchanging token: %s" % token
-  #form = ::Io::Flow::V0::Models::CardNonceForm.new(:token => token)
-  #card = client.cards.post_nonces(org, form)
-  cmd = "curl --silent -u #{api_key}: -d token=#{token} https://api.flow.io/#{org}/cards/nonces"
-  result = `#{cmd}`.strip
-  #puts "RESULT: #{result}"
-  card = JSON.parse(result)
-  #puts card.inspect
-  puts "Done. Permanent token: %s" % card['token']
+  token = if type == "curl"
+    cmd = "curl --silent -u #{api_key}: -d token=#{token} https://api.flow.io/#{org}/cards/nonces"
+    result = `#{cmd}`.strip
+    card = JSON.parse(result)
+    card['token']
+  else
+    form = ::Io::Flow::V0::Models::CardNonceForm.new(:token => token)
+    card = client.cards.post_nonces(org, form)
+    card.token
+  end
+  puts "Done. Permanent token: %s" % token
 }
 
 puts ""
