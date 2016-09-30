@@ -7,7 +7,8 @@ if org.empty?
   exit(1)
 end
 
-client = FlowCommerce.instance(:token => IO.read(File.expand_path("~/.flow/#{org}")).strip)
+api_key = IO.read(File.expand_path("~/.flow/#{org}")).strip
+client = FlowCommerce.instance(:token => api_key)
 
 card_path = "/tmp/card.json"
 File.open(card_path, "w") do |out|
@@ -23,7 +24,7 @@ eof
   out << value
 end
 
-result = `curl --silent -d@/tmp/card.json -H 'Content-type: application/json' https://api.flow.io/food52-sandbox/cards`
+result = `curl --silent -d@/tmp/card.json -H 'Content-type: application/json' https://api.flow.io/#{org}/cards`
 
 token = if md = result.match(/(F17[0-9a-zA-Z]+)/)
   md[1]
@@ -34,9 +35,14 @@ end
 
 bm = Benchmark.measure { 
   puts "     Exchanging token: %s" % token
-  form = ::Io::Flow::V0::Models::CardNonceForm.new(:token => token)
-  card = client.cards.post_nonces(org, form)
-  puts "Done. Permanent token: %s" % card.token
+  #form = ::Io::Flow::V0::Models::CardNonceForm.new(:token => token)
+  #card = client.cards.post_nonces(org, form)
+  cmd = "curl --silent -u #{api_key}: -d token=#{token} https://api.flow.io/#{org}/cards/nonces"
+  result = `#{cmd}`.strip
+  #puts "RESULT: #{result}"
+  card = JSON.parse(result)
+  #puts card.inspect
+  puts "Done. Permanent token: %s" % card['token']
 }
 
 puts ""
