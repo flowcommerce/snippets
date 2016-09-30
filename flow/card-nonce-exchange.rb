@@ -21,8 +21,8 @@ end
 type = ARGV.shift.to_s.strip
 if type.empty?
   type = 'client'
-elsif type != 'curl'
-  puts "ERROR: Unknown type '$typ'. Must be 'client' or 'curl'"
+elsif type != 'curl' && type != 'client'
+  puts "ERROR: Unknown type '#{typ}'. Must be 'client' or 'curl'"
   exit(1)
 end
 
