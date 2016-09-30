@@ -53,7 +53,7 @@ else
 end
 
 bm = Benchmark.measure { 
-  puts "     Exchanging token: %s" % token
+  puts "     Exchanging token via %s: %s" % [type, token]
   token = if type == "curl"
     cmd = "curl --silent -u #{api_key}: -d token=#{token} https://api.flow.io/#{org}/cards/nonces"
     result = `#{cmd}`.strip
