@@ -22,4 +22,4 @@ WHERE indrelid in (
 );
 
 -- 4. Reindex table
-REINDEX <TABLE_NAME>;
+REINDEX table <TABLE_NAME>;
