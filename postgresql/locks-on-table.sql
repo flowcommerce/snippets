@@ -2,7 +2,7 @@
 select t.relname,l.locktype,page,virtualtransaction,pid,mode,granted
   from pg_locks l, pg_stat_all_tables t
  where l.relation=t.relid
-   and relname='tmp_cards'
+   and relname='catalog_items'
  order by relation asc;
 
 -- SELECT pg_cancel_backend(pid);
