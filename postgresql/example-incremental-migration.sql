@@ -13,8 +13,8 @@
 
 begin;
   alter table labels disable trigger labels_journal_insert_trigger;
-  update labels set delivered_duty = null where delivered_duty = 'None' and id in (select tmp.id from tmp);
-  update labels set delivered_duty = 'paid' where delivered_duty = 'Some(paid)' and id in (select tmp.id from tmp);
-  update labels set delivered_duty = 'unpaid' where delivered_duty = 'Some(unpaid)' and id in (select tmp.id from tmp);
+  update labels set delivered_duty = null where delivered_duty = 'None' and id in (select tmp.id from tmp where index = 1);
+  update labels set delivered_duty = 'paid' where delivered_duty = 'Some(paid)' and id in (select tmp.id from tmp where index = 1);
+  update labels set delivered_duty = 'unpaid' where delivered_duty = 'Some(unpaid)' and id in (select tmp.id from tmp where index = 1);
   alter table labels enable trigger labels_journal_insert_trigger;
 commit;
