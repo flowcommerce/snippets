@@ -1,0 +1,1 @@
+select 'update allocations set id = id ' || substr(errors->>0, 23) || ';' from queued_refunds where errors->>0 like 'Cannot find alloca%';
